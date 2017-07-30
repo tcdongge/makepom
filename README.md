@@ -1,8 +1,10 @@
 # MakePom
 
 ## Purpose
+  Use the local jars in a maven project.
 
 ## Guide
+* copy jar files to the lib directory located at the root of your project
 * run `javac MakePom.java`
 * copy `MakePom.class` to your `lib` directory
 * run `java MakePom` in your `lib` directory

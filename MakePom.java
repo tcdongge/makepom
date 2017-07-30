@@ -62,7 +62,7 @@ public class MakePom {
 			transformer.transform(source, result);
 			stream.write(repositories);
 			stream.close();
-			System.out.println("OK, please see the file pom.xml.txt!");
+			System.out.println("Done, see the file pom.xml.txt!");
 		} catch (Exception ex) {
 
 		}

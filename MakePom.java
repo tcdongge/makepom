@@ -5,7 +5,9 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -38,7 +40,7 @@ public class MakePom {
 		Element dependencies = doc.createElement("dependencies");
 		doc.appendChild(dependencies);
 		for (File file : dir.listFiles()) {
-			if (accept(file)) {
+			if (file.getName().toLowerCase().endsWith(EXT_NAME)) {
 				System.out.println(file.getName());
 
 				String name = file.getName();
@@ -48,8 +50,13 @@ public class MakePom {
 						.toFile();
 				nf.mkdirs();
 
-				Copy(file, Paths.get(nf.getAbsolutePath(), strJarPrefix + "-" + name + "-" + strJarVersion + EXT_NAME)
-						.toString());
+				try {
+					Files.copy(file.toPath(),
+							Paths.get(nf.getAbsolutePath(), strJarPrefix + "-" + name + "-" + strJarVersion + EXT_NAME),
+							StandardCopyOption.REPLACE_EXISTING);
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
 
 				Element dep = doc.createElement("dependency");
 				dependencies.appendChild(dep);
@@ -85,30 +92,4 @@ public class MakePom {
 	static final String EXT_NAME = ".jar";
 	static byte[] repositories = ("<repositories>\n<repository>\n<id>in-project</id>\n<name>In Project Repo</name>\n<url>file://${project.basedir}/lib</url>\n</repository>\n</repositories>")
 			.getBytes(Charset.forName("UTF-8"));
-
-	static boolean accept(File pathname) {
-		if (pathname.getName().toLowerCase().endsWith(EXT_NAME)) {
-			return true;
-		}
-		return false;
-	}
-
-	static void Copy(File oldfile, String newPath) {
-		try {
-			int byteread = 0;
-			if (oldfile.exists()) {
-				InputStream inStream = new FileInputStream(oldfile);
-				FileOutputStream fs = new FileOutputStream(newPath);
-				byte[] buffer = new byte[1444];
-				while ((byteread = inStream.read(buffer)) != -1) {
-					fs.write(buffer, 0, byteread);
-				}
-				fs.close();
-				inStream.close();
-			}
-		} catch (Exception e) {
-			System.out.println("error  ");
-			e.printStackTrace();
-		}
-	}
 }

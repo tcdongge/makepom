@@ -21,6 +21,18 @@ import org.w3c.dom.Element;
 public class MakePom {
 	public static void main(String[] args) throws ParserConfigurationException {
 		File dir = new File(System.getProperty("user.dir"));
+		String strGroupId = System.getProperty("groupId");
+		String strJarPrefix = System.getProperty("jarPrefix");
+		String strJarVersion = System.getProperty("jarVersion");
+		if (strGroupId == null || strGroupId.isEmpty())
+			strGroupId = "zlocal";
+		if (strJarPrefix == null || strJarPrefix.isEmpty())
+			strJarPrefix = "zjar";
+		if (strJarVersion == null || strJarVersion.isEmpty())
+			strJarVersion = "1.0";
+		System.out.println(strGroupId);
+		System.out.println(strJarPrefix);
+		System.out.println(strJarVersion);
 
 		Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
 		Element dependencies = doc.createElement("dependencies");
@@ -32,19 +44,21 @@ public class MakePom {
 				String name = file.getName();
 				name = name.substring(0, name.length() - EXT_NAME.length());
 
-				File nf = Paths.get(dir.getAbsolutePath(), "zlocal", "zjar-" + name, "1.0").toFile();
+				File nf = Paths.get(dir.getAbsolutePath(), strGroupId, strJarPrefix + "-" + name, strJarVersion)
+						.toFile();
 				nf.mkdirs();
 
-				Copy(file, Paths.get(nf.getAbsolutePath(), "zjar-" + name + "-1.0" + EXT_NAME).toString());
+				Copy(file, Paths.get(nf.getAbsolutePath(), strJarPrefix + "-" + name + "-" + strJarVersion + EXT_NAME)
+						.toString());
 
 				Element dep = doc.createElement("dependency");
 				dependencies.appendChild(dep);
 				Element groupId = doc.createElement("groupId");
-				groupId.setTextContent("zlocal");
+				groupId.setTextContent(strGroupId);
 				Element artifactId = doc.createElement("artifactId");
-				artifactId.setTextContent("zjar-" + name);
+				artifactId.setTextContent(strJarPrefix + "-" + name);
 				Element version = doc.createElement("version");
-				version.setTextContent("1.0");
+				version.setTextContent(strJarVersion);
 				dep.appendChild(groupId);
 				dep.appendChild(artifactId);
 				dep.appendChild(version);
@@ -62,7 +76,7 @@ public class MakePom {
 			transformer.transform(source, result);
 			stream.write(repositories);
 			stream.close();
-			System.out.println("Done, see the file pom.xml.txt!");
+			System.out.println("Done, see the file pom.xml.txt.");
 		} catch (Exception ex) {
 
 		}

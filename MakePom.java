@@ -32,9 +32,6 @@ public class MakePom {
 			strJarPrefix = "zjar";
 		if (strJarVersion == null || strJarVersion.isEmpty())
 			strJarVersion = "1.0";
-		System.out.println(strGroupId);
-		System.out.println(strJarPrefix);
-		System.out.println(strJarVersion);
 
 		Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
 		Element dependencies = doc.createElement("dependencies");

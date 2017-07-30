@@ -73,6 +73,7 @@ public class MakePom {
 		try {
 			Transformer transformer = tf.newTransformer();
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
 			DOMSource source = new DOMSource(doc);
 			FileOutputStream stream = new FileOutputStream(Paths.get(dir.getAbsolutePath(), "pom.xml.txt").toString());
 			PrintWriter pw = new PrintWriter(stream);
@@ -87,6 +88,6 @@ public class MakePom {
 	}
 
 	static final String EXT_NAME = ".jar";
-	static byte[] repositories = ("<repositories>\n<repository>\n<id>in-project</id>\n<name>In Project Repo</name>\n<url>file://${project.basedir}/lib</url>\n</repository>\n</repositories>")
+	static byte[] repositories = ("<repositories>\r\n    <repository>\r\n        <id>in-project</id>\r\n        <name>In Project Repo</name>\r\n        <url>file://${project.basedir}/lib</url>\r\n    </repository>\r\n</repositories>")
 			.getBytes(Charset.forName("UTF-8"));
 }
